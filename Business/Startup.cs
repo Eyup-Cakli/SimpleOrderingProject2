@@ -158,7 +158,7 @@ namespace Business
             services.AddTransient<IGroupClaimRepository, GroupClaimRepository>();
 
 
-            services.AddDbContext<ProjectDbContext>();
+            services.AddDbContext<ProjectDbContext,MsDbContext>();
 
             services.AddSingleton<MongoDbContextBase, MongoDbContext>();
         }
