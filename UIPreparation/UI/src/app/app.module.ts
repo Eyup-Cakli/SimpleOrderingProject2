@@ -15,7 +15,9 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { LoginGuard } from './core/guards/login-guard';
 import { AuthInterceptorService } from './core/interceptors/auth-interceptor.service';
 import { HttpEntityRepositoryService } from './core/services/http-entity-repository.service';
-
+import { OrderComponent } from './core/components/admin/order/order.component';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 
 // i18 kullanıclak ise aşağıdaki metod aktif edilecek
 
@@ -40,6 +42,8 @@ export function tokenGetter() {
     ComponentsModule,
     RouterModule,
     AppRoutingModule,
+    MatSortModule,
+    MatTableModule,
     NgMultiSelectDropDownModule.forRoot(),
     SweetAlert2Module.forRoot(),
     NgbModule,
@@ -56,7 +60,8 @@ export function tokenGetter() {
   ],
   declarations: [
     AppComponent,
-    AdminLayoutComponent
+    AdminLayoutComponent,
+    
   ],
 
   providers: [
