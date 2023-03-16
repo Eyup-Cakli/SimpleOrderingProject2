@@ -38,6 +38,7 @@ namespace Business.Handlers.Products.Commands
             {
                 var productToDelete = _productRepository.Get(p => p.Id == request.Id);
 
+                productToDelete.isDeleted = true;
                 _productRepository.Delete(productToDelete);
                 await _productRepository.SaveChangesAsync();
                 return new SuccessResult(Messages.Deleted);

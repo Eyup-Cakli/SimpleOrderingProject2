@@ -6,20 +6,18 @@ import { MatTableDataSource } from "@angular/material/table";
 import { AlertifyService } from "app/core/services/alertify.service";
 import { LookUpService } from "app/core/services/lookUp.service";
 import { AuthService } from "app/core/components/admin/login/services/auth.service";
-import { Order } from "./models/Order";
-import { OrderService } from "./services/Order.service";
+import { Product } from "./models/Product";
+import { ProductService } from "./services/Product.service";
 import { environment } from "environments/environment";
-import { CustomerService } from "../customer/services/Customer.service";
 
 declare var jQuery: any;
 
 @Component({
-  selector: "app-order",
-  templateUrl: "./order.component.html",
-  styleUrls: ["./order.component.scss"],
+  selector: "app-product",
+  templateUrl: "./product.component.html",
+  styleUrls: ["./product.component.scss"],
 })
-export class OrderComponent implements AfterViewInit, OnInit {
-  customerList;
+export class ProductComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -31,82 +29,78 @@ export class OrderComponent implements AfterViewInit, OnInit {
     "lastUpdatedDate",
     "status",
     "isDeleted",
-    "customerId",
-    "productId",
-    "quantity",
+    "productName",
+    "color",
+    "size",
     "update",
     "delete",
   ];
 
-  orderList: Order[];
-  order: Order = new Order();
+  productList: Product[];
+  product: Product = new Product();
 
-  orderAddForm: FormGroup;
+  productAddForm: FormGroup;
 
-  orderId: number;
+  productId: number;
 
   constructor(
-    private orderService: OrderService,
+    private productService: ProductService,
     private lookupService: LookUpService,
     private alertifyService: AlertifyService,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private customerService: CustomerService
+    private authService: AuthService
   ) {}
 
   ngAfterViewInit(): void {
-    this.getOrderList();
+    this.getProductList();
   }
 
   ngOnInit() {
-    this.createOrderAddForm();
-    this.customerService.getCustomerList().subscribe(data => {
-      this.customerList = data;
-    })
+    this.createProductAddForm();
   }
 
-  getOrderList() {
-    this.orderService.getOrderList().subscribe((data) => {
-      this.orderList = data;
+  getProductList() {
+    this.productService.getProductList().subscribe((data) => {
+      this.productList = data;
       this.dataSource = new MatTableDataSource(data);
       this.configDataTable();
     });
   }
 
   save() {
-    if (this.orderAddForm.valid) {
-      this.order = Object.assign({}, this.orderAddForm.value);
+    if (this.productAddForm.valid) {
+      this.product = Object.assign({}, this.productAddForm.value);
 
-      if (this.order.id == 0) this.addOrder();
-      else this.updateOrder();
+      if (this.product.id == 0) this.addProduct();
+      else this.updateProduct();
     }
   }
 
-  addOrder() {
-    this.orderService.addOrder(this.order).subscribe((data) => {
-      this.getOrderList();
-      this.order = new Order();
-      jQuery("#order").modal("hide");
+  addProduct() {
+    this.productService.addProduct(this.product).subscribe((data) => {
+      this.getProductList();
+      this.product = new Product();
+      jQuery("#product").modal("hide");
       this.alertifyService.success(data);
-      this.clearFormGroup(this.orderAddForm);
+      this.clearFormGroup(this.productAddForm);
     });
   }
 
-  updateOrder() {
-    this.orderService.updateOrder(this.order).subscribe((data) => {
-      var index = this.orderList.findIndex((x) => x.id == this.order.id);
-      this.orderList[index] = this.order;
-      this.dataSource = new MatTableDataSource(this.orderList);
+  updateProduct() {
+    this.productService.updateProduct(this.product).subscribe((data) => {
+      var index = this.productList.findIndex((x) => x.id == this.product.id);
+      this.productList[index] = this.product;
+      this.dataSource = new MatTableDataSource(this.productList);
       this.configDataTable();
-      this.order = new Order();
-      jQuery("#order").modal("hide");
+      this.product = new Product();
+      jQuery("#product").modal("hide");
       this.alertifyService.success(data);
-      this.clearFormGroup(this.orderAddForm);
+      this.clearFormGroup(this.productAddForm);
     });
   }
 
-  createOrderAddForm() {
-    this.orderAddForm = this.formBuilder.group({
+  createProductAddForm() {
+    this.productAddForm = this.formBuilder.group({
       id: [0],
       createdUserId: [0],
       createdDate: [null],
@@ -114,26 +108,26 @@ export class OrderComponent implements AfterViewInit, OnInit {
       lastUpdatedDate: [null],
       status: [false],
       isDeleted: [false],
-      customerId: [0, Validators.required],
-      productId: [0, Validators.required],
-      quantity: [0, Validators.required],
+      productName: ["", Validators.required],
+      color: ["", Validators.required],
+      size: ["", Validators.required],
     });
   }
 
-  deleteOrder(orderId: number) {
-    this.orderService.deleteOrder(orderId).subscribe((data) => {
+  deleteProduct(productId: number) {
+    this.productService.deleteProduct(productId).subscribe((data) => {
       this.alertifyService.success(data.toString());
-      this.orderList = this.orderList.filter((x) => x.id != orderId);
-      this.dataSource = new MatTableDataSource(this.orderList);
+      this.productList = this.productList.filter((x) => x.id != productId);
+      this.dataSource = new MatTableDataSource(this.productList);
       this.configDataTable();
     });
   }
 
-  getOrderById(orderId: number) {
-    this.clearFormGroup(this.orderAddForm);
-    this.orderService.getOrderById(orderId).subscribe((data) => {
-      this.order = data;
-      this.orderAddForm.patchValue(data);
+  getProductById(productId: number) {
+    this.clearFormGroup(this.productAddForm);
+    this.productService.getProductById(productId).subscribe((data) => {
+      this.product = data;
+      this.productAddForm.patchValue(data);
     });
   }
 

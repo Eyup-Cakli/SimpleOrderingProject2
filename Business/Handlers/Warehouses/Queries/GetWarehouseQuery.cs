@@ -31,6 +31,7 @@ namespace Business.Handlers.Warehouses.Queries
             public async Task<IDataResult<Warehouse>> Handle(GetWarehouseQuery request, CancellationToken cancellationToken)
             {
                 var warehouse = await _warehouseRepository.GetAsync(p => p.Id == request.Id);
+
                 return new SuccessDataResult<Warehouse>(warehouse);
             }
         }

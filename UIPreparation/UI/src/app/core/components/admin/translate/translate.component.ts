@@ -79,7 +79,6 @@ export class TranslateComponent implements  AfterViewInit, OnInit {
 				this.addTranslate();
 			else
 				this.updateTranslate();
-
 		}
 
 	}

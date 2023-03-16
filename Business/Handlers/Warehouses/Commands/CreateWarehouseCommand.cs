@@ -23,9 +23,7 @@ namespace Business.Handlers.Warehouses.Commands
     {
 
         public int CreatedUserId { get; set; }
-        public System.DateTime CreatedDate { get; set; }
         public int LastUpdatedUserId { get; set; }
-        public System.DateTime LastUpdatedDate { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public int ProductId { get; set; }
@@ -49,7 +47,7 @@ namespace Business.Handlers.Warehouses.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
             {
-                var isThereWarehouseRecord = _warehouseRepository.Query().Any(u => u.CreatedUserId == request.CreatedUserId);
+                var isThereWarehouseRecord = _warehouseRepository.Query().Any(u => u.ProductId==request.ProductId);
 
                 if (isThereWarehouseRecord == true)
                     return new ErrorResult(Messages.NameAlreadyExist);
@@ -57,11 +55,11 @@ namespace Business.Handlers.Warehouses.Commands
                 var addedWarehouse = new Warehouse
                 {
                     CreatedUserId = request.CreatedUserId,
-                    CreatedDate = request.CreatedDate,
+                    CreatedDate = System.DateTime.Now,
                     LastUpdatedUserId = request.LastUpdatedUserId,
-                    LastUpdatedDate = request.LastUpdatedDate,
+                    LastUpdatedDate = System.DateTime.Now,
                     Status = request.Status,
-                    isDeleted = request.isDeleted,
+                    isDeleted = false,
                     ProductId = request.ProductId,
                     Quantity = request.Quantity,
                     ReadyForSale = request.ReadyForSale,

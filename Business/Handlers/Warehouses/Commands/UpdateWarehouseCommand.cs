@@ -22,10 +22,8 @@ namespace Business.Handlers.Warehouses.Commands
     public class UpdateWarehouseCommand : IRequest<IResult>
     {
         public int Id { get; set; }
-        public int CreatedUserId { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public int UpdatedUserId { get; set; }
         public int LastUpdatedUserId { get; set; }
-        public System.DateTime LastUpdatedDate { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public int ProductId { get; set; }
@@ -52,12 +50,12 @@ namespace Business.Handlers.Warehouses.Commands
                 var isThereWarehouseRecord = await _warehouseRepository.GetAsync(u => u.Id == request.Id);
 
 
-                isThereWarehouseRecord.CreatedUserId = request.CreatedUserId;
-                isThereWarehouseRecord.CreatedDate = request.CreatedDate;
+                isThereWarehouseRecord.CreatedUserId = request.UpdatedUserId;
+                isThereWarehouseRecord.CreatedDate = System.DateTime.Now;
                 isThereWarehouseRecord.LastUpdatedUserId = request.LastUpdatedUserId;
-                isThereWarehouseRecord.LastUpdatedDate = request.LastUpdatedDate;
+                isThereWarehouseRecord.LastUpdatedDate = System.DateTime.Now;
                 isThereWarehouseRecord.Status = request.Status;
-                isThereWarehouseRecord.isDeleted = request.isDeleted;
+                isThereWarehouseRecord.isDeleted = false;
                 isThereWarehouseRecord.ProductId = request.ProductId;
                 isThereWarehouseRecord.Quantity = request.Quantity;
                 isThereWarehouseRecord.ReadyForSale = request.ReadyForSale;

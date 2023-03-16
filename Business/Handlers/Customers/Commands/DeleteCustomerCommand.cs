@@ -38,6 +38,7 @@ namespace Business.Handlers.Customers.Commands
             {
                 var customerToDelete = _customerRepository.Get(p => p.Id == request.Id);
 
+                customerToDelete.isDeleted = true;
                 _customerRepository.Delete(customerToDelete);
                 await _customerRepository.SaveChangesAsync();
                 return new SuccessResult(Messages.Deleted);

@@ -22,10 +22,8 @@ namespace Business.Handlers.Products.Commands
     public class UpdateProductCommand : IRequest<IResult>
     {
         public int Id { get; set; }
-        public int CreatedUserId { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public int UpdatedUserId { get; set; }
         public int LastUpdatedUserId { get; set; }
-        public System.DateTime LastUpdatedDate { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public string ProductName { get; set; }
@@ -49,13 +47,13 @@ namespace Business.Handlers.Products.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
             {
-                var isThereProductRecord = await _productRepository.GetAsync(u => u.Id == request.Id);
+                var isThereProductRecord = await _productRepository.GetAsync(u => u.Id==request.Id);
 
 
-                isThereProductRecord.CreatedUserId = request.CreatedUserId;
-                isThereProductRecord.CreatedDate = request.CreatedDate;
+                isThereProductRecord.CreatedUserId = request.UpdatedUserId;
+                isThereProductRecord.CreatedDate = System.DateTime.Now;
                 isThereProductRecord.LastUpdatedUserId = request.LastUpdatedUserId;
-                isThereProductRecord.LastUpdatedDate = request.LastUpdatedDate;
+                isThereProductRecord.LastUpdatedDate = System.DateTime.Now;
                 isThereProductRecord.Status = request.Status;
                 isThereProductRecord.isDeleted = request.isDeleted;
                 isThereProductRecord.ProductName = request.ProductName;

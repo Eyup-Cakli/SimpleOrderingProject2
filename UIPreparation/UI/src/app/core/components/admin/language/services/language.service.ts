@@ -16,6 +16,8 @@ export class LanguageService {
     private readonly _httpClient: HttpClient) { }
 
   getLanguageList(): Observable<Language[]> {
+    console.log("geldiii");
+    
     return this._httpClient.get<Language[]>(environment.getApiUrl +'/languages/');
   }
 

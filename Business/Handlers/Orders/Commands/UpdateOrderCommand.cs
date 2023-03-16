@@ -22,10 +22,8 @@ namespace Business.Handlers.Orders.Commands
     public class UpdateOrderCommand : IRequest<IResult>
     {
         public int Id { get; set; }
-        public int CreatedUserId { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public int UpdatedUserId { get; set; }
         public int LastUpdatedUserId { get; set; }
-        public System.DateTime LastUpdatedDate { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public int CustomerId { get; set; }
@@ -52,10 +50,10 @@ namespace Business.Handlers.Orders.Commands
                 var isThereOrderRecord = await _orderRepository.GetAsync(u => u.Id == request.Id);
 
 
-                isThereOrderRecord.CreatedUserId = request.CreatedUserId;
-                isThereOrderRecord.CreatedDate = request.CreatedDate;
+                isThereOrderRecord.CreatedUserId = request.UpdatedUserId;
+                isThereOrderRecord.CreatedDate = System.DateTime.Now;
                 isThereOrderRecord.LastUpdatedUserId = request.LastUpdatedUserId;
-                isThereOrderRecord.LastUpdatedDate = request.LastUpdatedDate;
+                isThereOrderRecord.LastUpdatedDate = System.DateTime.Now;
                 isThereOrderRecord.Status = request.Status;
                 isThereOrderRecord.isDeleted = request.isDeleted;
                 isThereOrderRecord.CustomerId = request.CustomerId;

@@ -23,9 +23,7 @@ namespace Business.Handlers.Orders.Commands
     {
 
         public int CreatedUserId { get; set; }
-        public System.DateTime CreatedDate { get; set; }
         public int LastUpdatedUserId { get; set; }
-        public System.DateTime LastUpdatedDate { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public int CustomerId { get; set; }
@@ -49,7 +47,7 @@ namespace Business.Handlers.Orders.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
             {
-                var isThereOrderRecord = _orderRepository.Query().Any(u => u.CreatedUserId == request.CreatedUserId);
+                var isThereOrderRecord = _orderRepository.Query().Any(u => u.ProductId==request.ProductId && u.CustomerId==request.CustomerId && u.Quantity==request.Quantity && u.isDeleted==false);
 
                 if (isThereOrderRecord == true)
                     return new ErrorResult(Messages.NameAlreadyExist);
@@ -57,11 +55,11 @@ namespace Business.Handlers.Orders.Commands
                 var addedOrder = new Order
                 {
                     CreatedUserId = request.CreatedUserId,
-                    CreatedDate = request.CreatedDate,
+                    CreatedDate = System.DateTime.Now,
                     LastUpdatedUserId = request.LastUpdatedUserId,
-                    LastUpdatedDate = request.LastUpdatedDate,
+                    LastUpdatedDate = System.DateTime.Now,
                     Status = request.Status,
-                    isDeleted = request.isDeleted,
+                    isDeleted =false,
                     CustomerId = request.CustomerId,
                     ProductId = request.ProductId,
                     Quantity = request.Quantity,

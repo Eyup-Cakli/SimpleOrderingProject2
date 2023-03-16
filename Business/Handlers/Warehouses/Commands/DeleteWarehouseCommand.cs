@@ -37,7 +37,7 @@ namespace Business.Handlers.Warehouses.Commands
             public async Task<IResult> Handle(DeleteWarehouseCommand request, CancellationToken cancellationToken)
             {
                 var warehouseToDelete = _warehouseRepository.Get(p => p.Id == request.Id);
-
+                warehouseToDelete.isDeleted = true;
                 _warehouseRepository.Delete(warehouseToDelete);
                 await _warehouseRepository.SaveChangesAsync();
                 return new SuccessResult(Messages.Deleted);

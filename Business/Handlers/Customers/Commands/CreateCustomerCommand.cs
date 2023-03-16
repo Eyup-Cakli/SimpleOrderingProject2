@@ -23,9 +23,7 @@ namespace Business.Handlers.Customers.Commands
     {
 
         public int CreatedUserId { get; set; }
-        public System.DateTime CreatedDate { get; set; }
         public int LastUpdatedUserId { get; set; }
-        public System.DateTime LastUpdatedDate { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public string FirstName { get; set; }
@@ -52,7 +50,7 @@ namespace Business.Handlers.Customers.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
             {
-                var isThereCustomerRecord = _customerRepository.Query().Any(u => u.CreatedUserId == request.CreatedUserId);
+                var isThereCustomerRecord = _customerRepository.Query().Any(u => u.PhoneNumber == request.PhoneNumber && u.FirstName == request.FirstName && u.Email == request.Email && u.CustomerCode == request.CustomerCode);
 
                 if (isThereCustomerRecord == true)
                     return new ErrorResult(Messages.NameAlreadyExist);
@@ -60,11 +58,9 @@ namespace Business.Handlers.Customers.Commands
                 var addedCustomer = new Customer
                 {
                     CreatedUserId = request.CreatedUserId,
-                    CreatedDate = request.CreatedDate,
                     LastUpdatedUserId = request.LastUpdatedUserId,
-                    LastUpdatedDate = request.LastUpdatedDate,
                     Status = request.Status,
-                    isDeleted = request.isDeleted,
+                    isDeleted = false,
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     CustomerCode = request.CustomerCode,

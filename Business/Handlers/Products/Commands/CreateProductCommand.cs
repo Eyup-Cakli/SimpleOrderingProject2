@@ -23,9 +23,7 @@ namespace Business.Handlers.Products.Commands
     {
 
         public int CreatedUserId { get; set; }
-        public System.DateTime CreatedDate { get; set; }
         public int LastUpdatedUserId { get; set; }
-        public System.DateTime LastUpdatedDate { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public string ProductName { get; set; }
@@ -49,7 +47,7 @@ namespace Business.Handlers.Products.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(CreateProductCommand request, CancellationToken cancellationToken)
             {
-                var isThereProductRecord = _productRepository.Query().Any(u => u.CreatedUserId == request.CreatedUserId);
+                var isThereProductRecord = _productRepository.Query().Any(u => u.ProductName == request.ProductName);
 
                 if (isThereProductRecord == true)
                     return new ErrorResult(Messages.NameAlreadyExist);
@@ -57,11 +55,11 @@ namespace Business.Handlers.Products.Commands
                 var addedProduct = new Product
                 {
                     CreatedUserId = request.CreatedUserId,
-                    CreatedDate = request.CreatedDate,
+                    CreatedDate = System.DateTime.Now,
                     LastUpdatedUserId = request.LastUpdatedUserId,
-                    LastUpdatedDate = request.LastUpdatedDate,
+                    LastUpdatedDate = System.DateTime.Now,
                     Status = request.Status,
-                    isDeleted = request.isDeleted,
+                    isDeleted = false,
                     ProductName = request.ProductName,
                     Color = request.Color,
                     Size = request.Size,

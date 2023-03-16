@@ -22,6 +22,7 @@ export class AuthService {
   userToken: string;
   jwtHelper: JwtHelperService = new JwtHelperService();
   claims: string[];
+  userId:number;
 
   constructor(private httpClient: HttpClient, private storageService: LocalStorageService, 
     private router: Router, private alertifyService:AlertifyService,private sharedService:SharedService) {
@@ -94,8 +95,18 @@ export class AuthService {
     return !isExpired;
   }
 
+  /*
+  login olurken kullanıcı bilgilerrini güzlediğimiz bit token oluşturulur. bunu decode edebilmek için jwt helper
+  adında bir servis var. bu ser
+*/
   getCurrentUserId() {
-    this.jwtHelper.decodeToken(this.storageService.getToken()).userId;
+    
+    var decode = this.jwtHelper.decodeToken(this.storageService.getToken());
+    console.log(decode);
+    var propUserId = Object.keys(decode)?.filter(x => x.endsWith("/nameidentifier"))[0];
+    this.userId = Number(decode[propUserId]);
+    return this.userId;
+    
   }
 
   claimGuard(claim: string): boolean {

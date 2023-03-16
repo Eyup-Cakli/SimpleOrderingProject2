@@ -22,10 +22,8 @@ namespace Business.Handlers.Customers.Commands
     public class UpdateCustomerCommand : IRequest<IResult>
     {
         public int Id { get; set; }
-        public int CreatedUserId { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public int UpdatedUserId { get; set; }
         public int LastUpdatedUserId { get; set; }
-        public System.DateTime LastUpdatedDate { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public string FirstName { get; set; }
@@ -55,12 +53,12 @@ namespace Business.Handlers.Customers.Commands
                 var isThereCustomerRecord = await _customerRepository.GetAsync(u => u.Id == request.Id);
 
 
-                isThereCustomerRecord.CreatedUserId = request.CreatedUserId;
-                isThereCustomerRecord.CreatedDate = request.CreatedDate;
+                isThereCustomerRecord.CreatedUserId = request.UpdatedUserId;
+                isThereCustomerRecord.CreatedDate = System.DateTime.Now;
                 isThereCustomerRecord.LastUpdatedUserId = request.LastUpdatedUserId;
-                isThereCustomerRecord.LastUpdatedDate = request.LastUpdatedDate;
+                isThereCustomerRecord.LastUpdatedDate = System.DateTime.Now;
                 isThereCustomerRecord.Status = request.Status;
-                isThereCustomerRecord.isDeleted = request.isDeleted;
+                isThereCustomerRecord.isDeleted = false;
                 isThereCustomerRecord.FirstName = request.FirstName;
                 isThereCustomerRecord.LastName = request.LastName;
                 isThereCustomerRecord.CustomerCode = request.CustomerCode;

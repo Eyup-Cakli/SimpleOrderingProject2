@@ -6,20 +6,18 @@ import { MatTableDataSource } from "@angular/material/table";
 import { AlertifyService } from "app/core/services/alertify.service";
 import { LookUpService } from "app/core/services/lookUp.service";
 import { AuthService } from "app/core/components/admin/login/services/auth.service";
-import { Order } from "./models/Order";
-import { OrderService } from "./services/Order.service";
+import { Warehouse } from "./models/Warehouse";
+import { WarehouseService } from "./services/Warehouse.service";
 import { environment } from "environments/environment";
-import { CustomerService } from "../customer/services/Customer.service";
 
 declare var jQuery: any;
 
 @Component({
-  selector: "app-order",
-  templateUrl: "./order.component.html",
-  styleUrls: ["./order.component.scss"],
+  selector: "app-warehouse",
+  templateUrl: "./warehouse.component.html",
+  styleUrls: ["./warehouse.component.scss"],
 })
-export class OrderComponent implements AfterViewInit, OnInit {
-  customerList;
+export class WarehouseComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -31,82 +29,80 @@ export class OrderComponent implements AfterViewInit, OnInit {
     "lastUpdatedDate",
     "status",
     "isDeleted",
-    "customerId",
     "productId",
     "quantity",
+    "readyForSale",
     "update",
     "delete",
   ];
 
-  orderList: Order[];
-  order: Order = new Order();
+  warehouseList: Warehouse[]=[];
+  warehouse: Warehouse = new Warehouse();
 
-  orderAddForm: FormGroup;
+  warehouseAddForm: FormGroup;
 
-  orderId: number;
+  warehouseId: number;
 
   constructor(
-    private orderService: OrderService,
+    private warehouseService: WarehouseService,
     private lookupService: LookUpService,
     private alertifyService: AlertifyService,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private customerService: CustomerService
+    private authService: AuthService
   ) {}
 
   ngAfterViewInit(): void {
-    this.getOrderList();
+    this.getWarehouseList();
   }
 
   ngOnInit() {
-    this.createOrderAddForm();
-    this.customerService.getCustomerList().subscribe(data => {
-      this.customerList = data;
-    })
+    this.createWarehouseAddForm();
   }
 
-  getOrderList() {
-    this.orderService.getOrderList().subscribe((data) => {
-      this.orderList = data;
+  getWarehouseList() {
+    this.warehouseService.getWarehouseList().subscribe((data) => {
+      this.warehouseList = data;
       this.dataSource = new MatTableDataSource(data);
       this.configDataTable();
     });
   }
 
   save() {
-    if (this.orderAddForm.valid) {
-      this.order = Object.assign({}, this.orderAddForm.value);
+    if (this.warehouseAddForm.valid) {
+      this.warehouse = Object.assign({}, this.warehouseAddForm.value);
 
-      if (this.order.id == 0) this.addOrder();
-      else this.updateOrder();
+      if (this.warehouse.id == 0) this.addWarehouse();
+      else this.updateWarehouse();
     }
   }
 
-  addOrder() {
-    this.orderService.addOrder(this.order).subscribe((data) => {
-      this.getOrderList();
-      this.order = new Order();
-      jQuery("#order").modal("hide");
+  addWarehouse() {
+    this.warehouseService.addWarehouse(this.warehouse).subscribe((data) => {
+      this.getWarehouseList();
+      this.warehouse = new Warehouse();
+      jQuery("#warehouse").modal("hide");
       this.alertifyService.success(data);
-      this.clearFormGroup(this.orderAddForm);
+      this.clearFormGroup(this.warehouseAddForm);
     });
   }
 
-  updateOrder() {
-    this.orderService.updateOrder(this.order).subscribe((data) => {
-      var index = this.orderList.findIndex((x) => x.id == this.order.id);
-      this.orderList[index] = this.order;
-      this.dataSource = new MatTableDataSource(this.orderList);
+  updateWarehouse() {
+    this.warehouseService.updateWarehouse(this.warehouse).subscribe((data) => {
+      var index = this.warehouseList.findIndex(
+        (x) => x.id == this.warehouse.id
+      );
+      this.warehouseList[index] = this.warehouse;
+      this.dataSource = new MatTableDataSource(this.warehouseList);
       this.configDataTable();
-      this.order = new Order();
-      jQuery("#order").modal("hide");
+      this.warehouse = new Warehouse();
+      jQuery("#warehouse").modal("hide");
       this.alertifyService.success(data);
-      this.clearFormGroup(this.orderAddForm);
+      this.clearFormGroup(this.warehouseAddForm);
     });
   }
 
-  createOrderAddForm() {
-    this.orderAddForm = this.formBuilder.group({
+  createWarehouseAddForm() {
+    this.warehouseAddForm = this.formBuilder.group({
       id: [0],
       createdUserId: [0],
       createdDate: [null],
@@ -114,26 +110,28 @@ export class OrderComponent implements AfterViewInit, OnInit {
       lastUpdatedDate: [null],
       status: [false],
       isDeleted: [false],
-      customerId: [0, Validators.required],
       productId: [0, Validators.required],
       quantity: [0, Validators.required],
+      readyForSale: ["", Validators.required],
     });
   }
 
-  deleteOrder(orderId: number) {
-    this.orderService.deleteOrder(orderId).subscribe((data) => {
+  deleteWarehouse(warehouseId: number) {
+    this.warehouseService.deleteWarehouse(warehouseId).subscribe((data) => {
       this.alertifyService.success(data.toString());
-      this.orderList = this.orderList.filter((x) => x.id != orderId);
-      this.dataSource = new MatTableDataSource(this.orderList);
+      this.warehouseList = this.warehouseList.filter(
+        (x) => x.id != warehouseId
+      );
+      this.dataSource = new MatTableDataSource(this.warehouseList);
       this.configDataTable();
     });
   }
 
-  getOrderById(orderId: number) {
-    this.clearFormGroup(this.orderAddForm);
-    this.orderService.getOrderById(orderId).subscribe((data) => {
-      this.order = data;
-      this.orderAddForm.patchValue(data);
+  getWarehouseById(warehouseId: number) {
+    this.clearFormGroup(this.warehouseAddForm);
+    this.warehouseService.getWarehouseById(warehouseId).subscribe((data) => {
+      this.warehouse = data;
+      this.warehouseAddForm.patchValue(data);
     });
   }
 
