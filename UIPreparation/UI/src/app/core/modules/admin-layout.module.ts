@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { LoginComponent } from 'app/core/components/admin/login/login.component';
@@ -21,7 +22,7 @@ import { UserComponent } from 'app/core/components/admin/user/user.component';
 import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { TranslationService } from 'app/core/services/translation.service';
+import { TranslationService } from 'app/core/services/Translation.service';
 import { LanguageComponent } from '../components/admin/language/language.component';
 import { TranslateComponent } from '../components/admin/translate/translate.component';
 import { OperationClaimComponent } from '../components/admin/operationclaim/operationClaim.component';
@@ -32,6 +33,10 @@ import { ProductComponent } from '../components/admin/product/product.component'
 import { WarehouseComponent } from '../components/admin/warehouse/warehouse.component';
 import { CustomerComponent } from '../components/admin/customer/customer.component';
 import { OrderComponent } from '../components/admin/order/order.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
+
 
 
 // export function layoutHttpLoaderFactory(http: HttpClient) {
@@ -41,6 +46,8 @@ import { OrderComponent } from '../components/admin/order/order.component';
 
 @NgModule({
     imports: [
+        MatNativeDateModule,
+        MatDatepickerModule,
         CommonModule,
         RouterModule.forChild(AdminLayoutRoutes),
         FormsModule,
@@ -54,6 +61,7 @@ import { OrderComponent } from '../components/admin/order/order.component';
         MatTableModule,
         MatPaginatorModule,
         MatSortModule,
+        MatAutocompleteModule,
         MatCheckboxModule,
         NgbModule,
         NgMultiSelectDropDownModule,
@@ -66,6 +74,7 @@ import { OrderComponent } from '../components/admin/order/order.component';
                 deps: [HttpClient]
             }
         })
+        
     ],
     declarations: [
         DashboardComponent,

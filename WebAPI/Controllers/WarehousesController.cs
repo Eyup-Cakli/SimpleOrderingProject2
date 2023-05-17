@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Entities.Concrete;
 using System.Collections.Generic;
+using Entities.Dtos;
 
 namespace WebAPI.Controllers
 {
@@ -30,6 +31,35 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetList()
         {
             var result = await Mediator.Send(new GetWarehousesQuery());
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+        }
+
+        /// <summary>
+        /// List Dto Warehouses
+        /// </summary>
+        /// <remarks>bla bla bla Warehouses</remarks>
+        /// <return>Warehouses List</return>
+        /// <response code="200"></response>
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Warehouse>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("dtos")]
+        public async Task<IActionResult> GetWarehouseListDto()
+        {
+            return GetResponseOnlyResultData(await Mediator.Send(new GetWarehouseListDtoQuery()));
+        }
+
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WarehouseDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("dtosbydate")]
+        public async Task<IActionResult> GetWarehouseDtoListByDate(string startDate, string endDate)
+        {
+           var result = await Mediator.Send(new GetWarehouseDtoListByDateQuery { StartDate = startDate, EndDate = endDate });
             if (result.Success)
             {
                 return Ok(result.Data);
@@ -68,12 +98,13 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] CreateWarehouseCommand createWarehouse)
         {
-            var result = await Mediator.Send(createWarehouse);
-            if (result.Success)
-            {
-                return Ok(result.Message);
-            }
-            return BadRequest(result.Message);
+            //var result = await Mediator.Send(createWarehouse);
+            //if (result.Success)
+            //{
+            //    return Ok(result.Message);
+            //}
+            //return BadRequest(result.Message);
+            return GetResponseOnlyResultMessage(await Mediator.Send(createWarehouse));
         }
 
         /// <summary>

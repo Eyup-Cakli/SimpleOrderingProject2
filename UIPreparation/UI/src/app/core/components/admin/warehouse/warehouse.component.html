@@ -12,58 +12,68 @@
           <div class="card-body">
             <div class="table-responsive">
 
-              <div class="col-md-4 pull-right">
-                <mat-form-field>
-                  <mat-label>Filter</mat-label>
-                  <input matInput (keyup)="applyFilter($event)" placeholder="" #input>
-                </mat-form-field>
+              <div class="row">
+                <div class="col-md-4 pull-left">
+                  <mat-form-field appearance="fill">
+                    <mat-label>Enter a date range</mat-label>
+                    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                      <input matStartDate formControlName="start" placeholder="Start date">
+                      <input matEndDate formControlName="end" placeholder="End date">
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+
+                    <!-- <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                    <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error> -->
+                  </mat-form-field>
+                </div>
+                <div class="col">
+                  <div class="col-md-2">
+                    <button type="button" class="btn btn-primary pull-left" (click)="applyDateFilter()">Filter</button>
+                  </div>
+                  <div class="col-md-2">
+                    <button type="button" style="background-color: darkgray;" class="btn btn-primary pull-left"
+                      (click)="clearDateFilter()">clear</button>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <mat-form-field>
+                    <mat-label>Filter</mat-label>
+                    <input matInput (keyup)="applyFilter($event)" placeholder="" #input>
+                  </mat-form-field>
+                </div>
               </div>
+
               <table mat-table [dataSource]="dataSource" matSort>
-
-
 
                 <ng-container matColumnDef="id">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'Id'|translate}}</th>
                   <td mat-cell *matCellDef="let element">{{element.id}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="createdUserId">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'CreatedUserId'|translate}}</th>
-                  <td mat-cell *matCellDef="let element">{{element.createdUserId}}</td>
-                </ng-container>
-
                 <ng-container matColumnDef="createdDate">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'CreatedDate'|translate}}</th>
-                  <td mat-cell *matCellDef="let element">{{element.createdDate}}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="lastUpdatedUserId">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'LastUpdatedUserId'|translate}}</th>
-                  <td mat-cell *matCellDef="let element">{{element.lastUpdatedUserId}}</td>
+                  <td mat-cell *matCellDef="let element">{{element.createdDate | date : "MM/dd/yyyy HH:mm"}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="lastUpdatedDate">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'LastUpdatedDate'|translate}}</th>
-                  <td mat-cell *matCellDef="let element">{{element.lastUpdatedDate}}</td>
+                  <td mat-cell *matCellDef="let element">{{element.lastUpdatedDate | date : "MM/dd/yyyy HH:mm"}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="status">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'Status'|translate}}</th>
-                  <td mat-cell *matCellDef="let element">
-                    <mat-checkbox [checked]="element.status" [disabled]="true"></mat-checkbox>
-                  </td>
+                <ng-container matColumnDef="userName">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'userName'|translate}}</th>
+                  <td mat-cell *matCellDef="let element">{{element.userName}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="isDeleted">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'isDeleted'|translate}}</th>
-                  <td mat-cell *matCellDef="let element">
-                    <mat-checkbox [checked]="element.isDeleted" [disabled]="true"></mat-checkbox>
-                  </td>
+                <ng-container matColumnDef="productName">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'productName'|translate}}</th>
+                  <td mat-cell *matCellDef="let element">{{element.productName}}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="productId">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'ProductId'|translate}}</th>
-                  <td mat-cell *matCellDef="let element">{{element.productId}}</td>
+                <ng-container matColumnDef="size">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'size'|translate}}</th>
+                  <td mat-cell *matCellDef="let element">{{element.size}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="quantity">
@@ -76,14 +86,11 @@
                   <td mat-cell *matCellDef="let element">{{element.readyForSale}}</td>
                 </ng-container>
 
-
-
-
                 <ng-container matColumnDef="update">
                   <th mat-header-cell *matHeaderCellDef></th>
                   <td style="width: 25px;" mat-cell *matCellDef="let element">
                     <a *ngIf="checkClaim('UpdateWarehouseCommand')" data-toggle="modal" data-target="#warehouse"
-                      (click)="getWarehouseById(element.id)">
+                      (click)="getWarehouseById(element)">
                       <i title="{{'Update'| translate}}" style="color:#ff5722;" class="far fa-edit"></i>
                     </a>
                   </td>
@@ -131,12 +138,27 @@
 
           <div class="row">
             <div class="col-md-12">
-              <label for="productId">Choose a product :</label>
-              <select class="browser-default custom-select" name="productId" formControlName="productId">
-                <option *ngFor="let item of warehouselookUp" [ngValue]="item.id"> {{item.label}}</option>
-              </select>
+              <mat-form-field>
+                <input type="text" placeholder="Select Product" aria-label="Number" matInput
+                  [formControl]="myProductControl" [matAutocomplete]="auto">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFnProduct">
+                  <mat-option *ngFor="let item of filteredProducts  | async" [value]="item">{{item.productName+"
+                    "+item.size+" "+item.color}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
             </div>
           </div>
+
+          <!-- <div class="row">
+            <div class="col-md-12" style="text-align: left;">
+              <label for="productId">Choose a product</label>
+              <select class="browser-default custom-select" name="productId" formControlName="productId">
+                <option value='' disabled selected>Product</option>
+                <option *ngFor="let item of productlookUp" [ngValue]="item.id"> {{item.label}}</option>
+              </select>
+            </div>
+          </div> -->
 
           <div class="row">
             <div class="col col-md-12">
@@ -151,14 +173,32 @@
           </div>
 
           <div class="row">
-            <div class="col col-md-12">
-              <mat-form-field class="example-full-width">
-                <input matInput placeholder="readyForSale" type="text" id="readyForSale" name="readyForSale"
-                  formControlName="readyForSale" />
-                <div class="alert alert-danger"
-                  *ngIf="warehouseAddForm.get('readyForSale')!.hasError('readyForSale') && warehouseAddForm.get('readyForSale')!.dirty">
-                </div>
-              </mat-form-field>
+            <div class="col col-md-12" style="text-align: left;">
+              <label for="color">Choose Color</label>
+              <select class="browser-default custom-select" name="color" formControlName="color">
+                <option value='' disabled selected>Color</option>
+                <option *ngFor="let item of colorEnumKeys" [value]="item"> {{color[item]}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col col-md-12" style="text-align: left;">
+              <label for="size">Choose Size</label>
+              <select class="browser-default custom-select" name="size" formControlName="size">
+                <option value='' disabled selected>Size</option>
+                <option *ngFor="let item of sizeEnumKeys" [value]="item"> {{size[item]}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col col-md-12" style="text-align: left;">
+              <label for="readyForSale">Ready For Sale</label>
+              <select class="browser-default custom-select" name="readyForSale" formControlName="readyForSale">
+                <option value="" disabled selected>Ready for sale</option>
+                <option *ngFor="let item of readyForSaleEnumKeys" [value]="item">{{readyForSale[item]}}</option>
+              </select>
             </div>
           </div>
 

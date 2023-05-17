@@ -238,6 +238,9 @@ export class UserComponent implements AfterViewInit, OnInit {
       jQuery("#user").modal("hide");
       this.alertifyService.success(data);
       this.clearFormGroup(this.userAddForm);
+    },(error)=>{
+      console.log(error);
+      this.alertifyService.error(error.error);
     });
   }
 

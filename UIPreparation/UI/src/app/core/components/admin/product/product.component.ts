@@ -6,9 +6,13 @@ import { MatTableDataSource } from "@angular/material/table";
 import { AlertifyService } from "app/core/services/alertify.service";
 import { LookUpService } from "app/core/services/lookUp.service";
 import { AuthService } from "app/core/components/admin/login/services/auth.service";
-import { Product } from "./models/Product";
-import { ProductService } from "./services/Product.service";
+import { Product } from "./models/product";
+import { ProductService } from "./services/product.service";
 import { environment } from "environments/environment";
+import { LookUp } from "app/core/models/lookUp";
+import { data, error } from "jquery";
+import { Size } from "./models/size-enum";
+import { Color } from "./models/color-enum";
 
 declare var jQuery: any;
 
@@ -21,14 +25,19 @@ export class ProductComponent implements AfterViewInit, OnInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  
+  productlookUp: LookUp[];
+
+  size = Size;
+  sizeEnumKeys=[];
+
+  color = Color;
+  colorEnumKeys=[];
+
   displayedColumns: string[] = [
     "id",
-    "createdUserId",
     "createdDate",
-    "lastUpdatedUserId",
     "lastUpdatedDate",
-    "status",
-    "isDeleted",
     "productName",
     "color",
     "size",
@@ -49,9 +58,15 @@ export class ProductComponent implements AfterViewInit, OnInit {
     private alertifyService: AlertifyService,
     private formBuilder: FormBuilder,
     private authService: AuthService
-  ) {}
+  ) {
+    this.sizeEnumKeys=Object.keys(this.size);
+    this.colorEnumKeys=Object.keys(this.color);
+  }
 
   ngAfterViewInit(): void {
+    this.lookupService.getProductLookUp().subscribe((data)=>{
+      this.productlookUp = data;
+    })
     this.getProductList();
   }
 
@@ -70,6 +85,9 @@ export class ProductComponent implements AfterViewInit, OnInit {
   save() {
     if (this.productAddForm.valid) {
       this.product = Object.assign({}, this.productAddForm.value);
+      console.log(this.authService.getCurrentUserId());
+      this.product.createdUserId = Number(this.authService.getCurrentUserId());
+      this.product.lastUpdatedUserId = Number(this.authService.getCurrentUserId());
 
       if (this.product.id == 0) this.addProduct();
       else this.updateProduct();
@@ -83,8 +101,12 @@ export class ProductComponent implements AfterViewInit, OnInit {
       jQuery("#product").modal("hide");
       this.alertifyService.success(data);
       this.clearFormGroup(this.productAddForm);
+    },
+    (error)=>{
+      console.log(error);
+      this.alertifyService.error(error.error);
     });
-  }
+    }
 
   updateProduct() {
     this.productService.updateProduct(this.product).subscribe((data) => {
@@ -92,6 +114,7 @@ export class ProductComponent implements AfterViewInit, OnInit {
       this.productList[index] = this.product;
       this.dataSource = new MatTableDataSource(this.productList);
       this.configDataTable();
+      this.getProductList();
       this.product = new Product();
       jQuery("#product").modal("hide");
       this.alertifyService.success(data);
@@ -103,11 +126,8 @@ export class ProductComponent implements AfterViewInit, OnInit {
     this.productAddForm = this.formBuilder.group({
       id: [0],
       createdUserId: [0],
-      createdDate: [null],
       lastUpdatedUserId: [0],
-      lastUpdatedDate: [null],
-      status: [false],
-      isDeleted: [false],
+      status: [true],
       productName: ["", Validators.required],
       color: ["", Validators.required],
       size: ["", Validators.required],
@@ -138,6 +158,7 @@ export class ProductComponent implements AfterViewInit, OnInit {
     Object.keys(group.controls).forEach((key) => {
       group.get(key).setErrors(null);
       if (key == "id") group.get(key).setValue(0);
+      else if (key =="status") group.get(key).setValue(true);
     });
   }
 

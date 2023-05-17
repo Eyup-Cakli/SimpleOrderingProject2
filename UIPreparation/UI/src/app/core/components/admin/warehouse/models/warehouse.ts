@@ -10,5 +10,4 @@ isDeleted:boolean;
 productId?:number; 
 quantity?:number; 
 readyForSale?:string; 
-
 }

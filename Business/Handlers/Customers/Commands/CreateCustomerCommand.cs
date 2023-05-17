@@ -50,29 +50,35 @@ namespace Business.Handlers.Customers.Commands
             [SecuredOperation(Priority = 1)]
             public async Task<IResult> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
             {
-                var isThereCustomerRecord = _customerRepository.Query().Any(u => u.PhoneNumber == request.PhoneNumber && u.FirstName == request.FirstName && u.Email == request.Email && u.CustomerCode == request.CustomerCode);
+                var isThereCustomerRecord = _customerRepository.Query().Any(u => u.PhoneNumber == request.PhoneNumber && u.FirstName == request.FirstName && u.LastName == request.LastName && u.Email == request.Email && u.CustomerCode == request.CustomerCode && u.Address == request.Address && u.isDeleted == false);
 
-                if (isThereCustomerRecord == true)
-                    return new ErrorResult(Messages.NameAlreadyExist);
-
-                var addedCustomer = new Customer
+                if (isThereCustomerRecord == true) 
                 {
-                    CreatedUserId = request.CreatedUserId,
-                    LastUpdatedUserId = request.LastUpdatedUserId,
-                    Status = request.Status,
-                    isDeleted = false,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    CustomerCode = request.CustomerCode,
-                    Address = request.Address,
-                    PhoneNumber = request.PhoneNumber,
-                    Email = request.Email,
+                    return new ErrorResult(Messages.NameAlreadyExist);
+                }
+                    
 
-                };
+                else
+                {
+                    var addedCustomer = new Customer
+                    {
+                        CreatedUserId = request.CreatedUserId,
+                        CreatedDate = System.DateTime.Now,
+                        Status = request.Status,
+                        isDeleted = false,
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        CustomerCode = request.CustomerCode,
+                        Address = request.Address,
+                        PhoneNumber = request.PhoneNumber,
+                        Email = request.Email,
 
-                _customerRepository.Add(addedCustomer);
-                await _customerRepository.SaveChangesAsync();
-                return new SuccessResult(Messages.Added);
+                    };
+
+                    _customerRepository.Add(addedCustomer);
+                    await _customerRepository.SaveChangesAsync();
+                    return new SuccessResult(Messages.Added);
+                }
             }
         }
     }

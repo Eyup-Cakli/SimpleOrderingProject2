@@ -30,8 +30,21 @@ export class LookUpService {
     return this.httpClient.get<LookUp[]>(environment.getApiUrl + "/languages/lookups")
   }
 
-  /*getWarehouseLookUp():Observable<LookUp[]>{
-    return this.httpClient.get<LookUp[]>(environment.getApiUrl+)
-  }*/
+  getWarehouseLookUp():Observable<LookUp[]>{
+    return this.httpClient.get<LookUp[]>(environment.getApiUrl+"/warehauses/lookups")
+  }
+
+  getProductLookUp():Observable<LookUp[]>{
+    return this.httpClient.get<LookUp[]>(environment.getApiUrl+"/products/lookups")
+  }
+
+  getOrderLookUp():Observable<LookUp[]>{
+    return this.httpClient.get<LookUp[]>(environment.getApiUrl+"/orders/lookups")
+  }
+
+  getCustomerLookUp():Observable<LookUp[]>{
+    return this.httpClient.get<LookUp[]>(environment.getApiUrl+"/customers/lookups")
+  }
 
 }
+ 

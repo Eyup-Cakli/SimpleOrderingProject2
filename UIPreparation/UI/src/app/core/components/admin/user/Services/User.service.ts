@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '../models/user';
+import { User } from '../models/User';
 import { environment } from '../../../../../../environments/environment'
 import { LookUp } from 'app/core/models/lookUp';
 import { PasswordDto } from '../models/passwordDto';

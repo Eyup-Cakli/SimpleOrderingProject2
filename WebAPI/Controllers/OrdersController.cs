@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Entities.Concrete;
 using System.Collections.Generic;
+using Business.Handlers.Warehouses.Queries;
+using Entities.Dtos;
 
 namespace WebAPI.Controllers
 {
@@ -30,6 +32,41 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetList()
         {
             var result = await Mediator.Send(new GetOrdersQuery());
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+        }
+
+        /// <summary>
+        /// List Dto Warehouses
+        /// </summary>
+        /// <remarks>bla bla bla Warehouses</remarks>
+        /// <return>Warehouses List</return>
+        /// <response code="200"></response>
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<OrderDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("dtos")]
+        public async Task<IActionResult> GetOrderListDto()
+        {
+            return GetResponseOnlyResultData(await Mediator.Send(new GetOrderListDtoQuery()));
+        }
+
+        ///<summary>
+        ///It brings the details according to its id.
+        ///</summary>
+        ///<remarks>Orders</remarks>
+        ///<return>Orders List</return>
+        ///<response code="200"></response>  
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OrderDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("dtosbydate")]
+        public async Task<IActionResult> getOrderListDtoByDate(string startDate, string endDate)
+        {
+            var result = await Mediator.Send(new GetOrderDtoListByDateQuery {StartDate = startDate, EndDate = endDate});
             if (result.Success)
             {
                 return Ok(result.Data);

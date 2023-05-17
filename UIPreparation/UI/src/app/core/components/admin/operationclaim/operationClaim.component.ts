@@ -6,8 +6,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AlertifyService } from 'app/core/services/alertify.service';
 import { LookUpService } from 'app/core/services/lookUp.service';
 import { AuthService } from '../login/services/auth.service';
-import { OperationClaim } from './Models/OperationClaim';
-import { OperationClaimService } from './Services/OperationClaim.service';
+import { OperationClaim } from './models/operationclaim';
+import { OperationClaimService } from './services/operationclaim.service';
 
 
 declare var jQuery: any;

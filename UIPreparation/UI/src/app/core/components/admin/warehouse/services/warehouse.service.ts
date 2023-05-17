@@ -1,8 +1,9 @@
 ﻿import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Warehouse } from '../models/Warehouse';
+import { Warehouse } from '../models/warehouse';
 import { environment } from 'environments/environment';
+import { WarehouseDto } from '../models/warehouseDto';
 
 
 @Injectable({
@@ -11,7 +12,16 @@ import { environment } from 'environments/environment';
 export class WarehouseService {
 
   constructor(private httpClient: HttpClient) { }
+  
+  getWarehouseDtoListByDate(startDate : string, endDate : string): Observable<WarehouseDto[]> {
+    const params ={startDate, endDate};
+    return this.httpClient.get<WarehouseDto[]>(environment.getApiUrl + '/warehouses/dtosbydate',{params})
+  }
 
+  getWarehouseListDto(): Observable<WarehouseDto[]> {
+
+    return this.httpClient.get<WarehouseDto[]>(environment.getApiUrl + '/warehouses/dtos')
+  }
 
   getWarehouseList(): Observable<Warehouse[]> {
 

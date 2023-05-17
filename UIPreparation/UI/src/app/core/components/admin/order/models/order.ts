@@ -9,6 +9,7 @@ status:boolean;
 isDeleted:boolean; 
 customerId?:number; 
 productId?:number; 
-quantity?:number; 
+quantity?:number;
+size?:string; 
 
 }

@@ -6,7 +6,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { AlertifyService } from "app/core/services/alertify.service";
 import { LookUpService } from "app/core/services/lookUp.service";
 import { AuthService } from "app/core/components/admin/login/services/auth.service";
-import { Customer } from "./models/Customer";
+import { Customer } from "./models/customer";
 import { CustomerService } from "app/core/components/admin/customer/services/customer.service";
 
 import { environment } from "environments/environment";
@@ -24,12 +24,8 @@ export class CustomerComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort: MatSort;
   displayedColumns: string[] = [
     "id",
-    "createdUserId",
     "createdDate",
-    "lastUpdatedUserId",
     "lastUpdatedDate",
-    "status",
-    "isDeleted",
     "firstName",
     "lastName",
     "customerCode",
@@ -75,9 +71,9 @@ export class CustomerComponent implements AfterViewInit, OnInit {
     if (this.customerAddForm.valid) {
       this.customer = Object.assign({}, this.customerAddForm.value);
       console.log(this.authService.getCurrentUserId());
-    
-      
       this.customer.createdUserId = Number(this.authService.getCurrentUserId());
+      this.customer.lastUpdatedUserId = Number(this.authService.getCurrentUserId());
+      
       if (this.customer.id == 0) 
         this.addCustomer();
       else 
@@ -92,6 +88,9 @@ export class CustomerComponent implements AfterViewInit, OnInit {
       jQuery("#customer").modal("hide");
       this.alertifyService.success(data);
       this.clearFormGroup(this.customerAddForm);
+    },(error)=>{
+      console.log(error);
+      this.alertifyService.error(error.error);
     });
   }
 
@@ -112,11 +111,8 @@ export class CustomerComponent implements AfterViewInit, OnInit {
     this.customerAddForm = this.formBuilder.group({
       id: [0],
       createdUserId: [0],
-      createdDate: [null],
       lastUpdatedUserId: [0],
-      lastUpdatedDate: [null],
-      status: [false],
-      isDeleted: [false],
+      status: [true],
       firstName: ["", Validators.required],
       lastName: ["", Validators.required],
       customerCode: ["", Validators.required],
@@ -150,6 +146,7 @@ export class CustomerComponent implements AfterViewInit, OnInit {
     Object.keys(group.controls).forEach((key) => {
       group.get(key).setErrors(null);
       if (key == "id") group.get(key).setValue(0);
+      else if (key == "status") group.get(key).setValue(true);
     });
   }
 

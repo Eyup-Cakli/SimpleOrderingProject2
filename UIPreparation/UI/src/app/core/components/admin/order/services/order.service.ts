@@ -1,8 +1,9 @@
 ﻿import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Order } from '../models/Order';
+import { Order } from '../models/order';
 import { environment } from 'environments/environment';
+
 
 
 @Injectable({
@@ -12,10 +13,14 @@ export class OrderService {
 
   constructor(private httpClient: HttpClient) { }
 
+  getOrderListDtoByDate(startDate :string, endDate :string) : Observable<Order[]>{
+    const params ={startDate, endDate}
+    return this.httpClient.get<Order[]>(environment.getApiUrl + '/orders/dtosbydate', {params});
+  }
 
-  getOrderList(): Observable<Order[]> {
+  getOrderListDto(): Observable<Order[]> {
 
-    return this.httpClient.get<Order[]>(environment.getApiUrl + '/orders/getall')
+    return this.httpClient.get<Order[]>(environment.getApiUrl + '/orders/dtos')
   }
 
   getOrderById(id: number): Observable<Order> {

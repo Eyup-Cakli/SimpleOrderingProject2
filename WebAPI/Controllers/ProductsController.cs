@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Entities.Concrete;
 using System.Collections.Generic;
+using Core.Entities.Dtos;
 
 namespace WebAPI.Controllers
 {
@@ -112,6 +113,16 @@ namespace WebAPI.Controllers
                 return Ok(result.Message);
             }
             return BadRequest(result.Message);
+        }
+
+        [AllowAnonymous]
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SelectionItem>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("lookups")]
+        public async Task<IActionResult> GetLookUpList()
+        {
+            return GetResponseOnlyResultData(await Mediator.Send(new GetProductLookupQuery()));
         }
     }
 }

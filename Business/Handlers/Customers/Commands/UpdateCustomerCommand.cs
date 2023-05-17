@@ -22,8 +22,8 @@ namespace Business.Handlers.Customers.Commands
     public class UpdateCustomerCommand : IRequest<IResult>
     {
         public int Id { get; set; }
-        public int UpdatedUserId { get; set; }
         public int LastUpdatedUserId { get; set; }
+        public int CreatedUserId { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public string FirstName { get; set; }
@@ -52,9 +52,7 @@ namespace Business.Handlers.Customers.Commands
             {
                 var isThereCustomerRecord = await _customerRepository.GetAsync(u => u.Id == request.Id);
 
-
-                isThereCustomerRecord.CreatedUserId = request.UpdatedUserId;
-                isThereCustomerRecord.CreatedDate = System.DateTime.Now;
+                isThereCustomerRecord.CreatedUserId = request.CreatedUserId;
                 isThereCustomerRecord.LastUpdatedUserId = request.LastUpdatedUserId;
                 isThereCustomerRecord.LastUpdatedDate = System.DateTime.Now;
                 isThereCustomerRecord.Status = request.Status;

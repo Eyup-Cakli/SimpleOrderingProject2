@@ -22,7 +22,7 @@ namespace Business.Handlers.Products.Commands
     public class UpdateProductCommand : IRequest<IResult>
     {
         public int Id { get; set; }
-        public int UpdatedUserId { get; set; }
+        public int CreatedUserId { get; set; }
         public int LastUpdatedUserId { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
@@ -50,8 +50,8 @@ namespace Business.Handlers.Products.Commands
                 var isThereProductRecord = await _productRepository.GetAsync(u => u.Id==request.Id);
 
 
-                isThereProductRecord.CreatedUserId = request.UpdatedUserId;
-                isThereProductRecord.CreatedDate = System.DateTime.Now;
+
+                isThereProductRecord.CreatedUserId = request.CreatedUserId;
                 isThereProductRecord.LastUpdatedUserId = request.LastUpdatedUserId;
                 isThereProductRecord.LastUpdatedDate = System.DateTime.Now;
                 isThereProductRecord.Status = request.Status;

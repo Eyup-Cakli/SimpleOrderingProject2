@@ -23,7 +23,6 @@ namespace Business.Handlers.Warehouses.Commands
     {
 
         public int CreatedUserId { get; set; }
-        public int LastUpdatedUserId { get; set; }
         public bool Status { get; set; }
         public bool isDeleted { get; set; }
         public int ProductId { get; set; }
@@ -56,8 +55,6 @@ namespace Business.Handlers.Warehouses.Commands
                 {
                     CreatedUserId = request.CreatedUserId,
                     CreatedDate = System.DateTime.Now,
-                    LastUpdatedUserId = request.LastUpdatedUserId,
-                    LastUpdatedDate = System.DateTime.Now,
                     Status = request.Status,
                     isDeleted = false,
                     ProductId = request.ProductId,

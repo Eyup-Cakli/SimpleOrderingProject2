@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { LookUp } from 'app/core/models/lookUp';
-import { AlertifyService } from 'app/core/services/alertify.service';
+import { AlertifyService } from 'app/core/services/Alertify.service';
 import { LookUpService } from 'app/core/services/lookUp.service';
 import { environment } from 'environments/environment';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';

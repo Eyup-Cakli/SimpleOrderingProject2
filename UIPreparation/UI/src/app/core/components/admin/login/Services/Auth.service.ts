@@ -23,6 +23,7 @@ export class AuthService {
   jwtHelper: JwtHelperService = new JwtHelperService();
   claims: string[];
   userId:number;
+  warehouseId:number;
 
   constructor(private httpClient: HttpClient, private storageService: LocalStorageService, 
     private router: Router, private alertifyService:AlertifyService,private sharedService:SharedService) {
